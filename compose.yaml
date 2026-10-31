@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    # Bound to localhost only: private tool, reach it from your phone over Tailscale, never a public port.
+    ports:
+      - "127.0.0.1:8000:8080"
+    env_file:
+      - path: .env
+        required: false
+    read_only: true
+    tmpfs:
+      - /tmp
