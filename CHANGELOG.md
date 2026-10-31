@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-31 07:06 · v0.2.0
+
+- feat(urls): accept only single-video YouTube links (https, host allowlist, no playlists), checked before any network call
+- feat(converter): yt-dlp + ffmpeg to MP3 (`YTCONV_AUDIO_BITRATE_KBPS`, default 192) with title/artist tags; live streams and videos over the length limit refused before download; licence read so Creative Commons videos are flagged
+- feat(cli): `ytconv <link> --confirm-rights --out DIR`
+- test: 48 new tests with a fake downloader (no YouTube in CI)
 ## 2026-10-31 15:15
 
 - ci: `branch-cleanup.yml` deletes a PR's branch after it is merged (skips forks, `main`, stacked bases)

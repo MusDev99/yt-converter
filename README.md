@@ -9,7 +9,7 @@ Private, personal tool: paste a YouTube link, get an MP3 to download.
 | Status | Feature |
 |---|---|
 | ✅ | Project scaffold, CI, Docker image with ffmpeg, `/healthz` |
-| 🔜 Week 1 | URL validation, yt-dlp + ffmpeg to MP3 (192 kbps) with ID3 tags |
+| ✅ Week 1 | URL validation, yt-dlp + ffmpeg to MP3 (192 kbps) with title/artist tags, 15-min limit, CLI |
 | 🔜 Week 2 | Job API with progress + mobile web app (paste, preview, convert, download) |
 | 🔜 Week 3 | Google sign-in allowlist, rate limits, rights confirmation, auto-delete |
 | 🔜 Week 4 | v1.0.0: local Docker (+ Tailscale for phone), optional Cloud Run |
@@ -23,12 +23,25 @@ make verify     # lint + typecheck + tests
 make docker     # same app in Docker, on 127.0.0.1:8000
 ```
 
-Settings live in `.env` (copy `.env.example`).
+### 🎧 Convert from the command line (Week 1)
+
+Needs [ffmpeg](https://ffmpeg.org/download.html) (`brew install ffmpeg` / `sudo apt install ffmpeg` / `winget install ffmpeg`).
+
+```bash
+uv run ytconv "https://youtu.be/<id>" --confirm-rights --out ~/Music
+# 🎵 My Track · Me · 3:05 · licence: Creative Commons
+# ✅ Saved /Users/you/Music/My Track.mp3
+```
+
+`--confirm-rights` is required: only convert videos you own or that are Creative Commons / public domain. The licence YouTube reports is printed so you can check.
+
+Settings live in `.env` (copy `.env.example`): max length, MP3 bitrate (128/192/256/320), work folder.
 
 ## 🗂️ Structure
 
 ```
-src/ytconv/     app code (main.py = FastAPI, config.py = settings)
+src/ytconv/     app code: urls.py (link check), converter.py (yt-dlp + ffmpeg),
+                naming.py, __main__.py (CLI), main.py (FastAPI), config.py
 tests/          pytest
 docs/features/  feature specs
 .agents/skills/ shared code-review checklist

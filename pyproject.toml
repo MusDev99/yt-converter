@@ -1,6 +1,6 @@
 [project]
 name = "yt-converter"
-version = "0.1.0"
+version = "0.2.0"
 description = "Private tool: YouTube link to MP3, for content you own or that is Creative Commons"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -8,6 +8,7 @@ dependencies = [
     "fastapi==0.162.0",
     "pydantic-settings==2.16.2",
     "uvicorn==0.54.0",
+    "yt-dlp==2026.10.26",
 ]
 
 [dependency-groups]
@@ -43,3 +44,11 @@ files = ["src", "tests"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+
+[[tool.mypy.overrides]]
+# yt-dlp ships no type hints; its surface is wrapped in converter.py.
+module = ["yt_dlp", "yt_dlp.*"]
+ignore_missing_imports = true
+
+[project.scripts]
+ytconv = "ytconv.__main__:main"
