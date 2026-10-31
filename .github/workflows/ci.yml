@@ -1,0 +1,48 @@
+# Gate for every PR: lint, typecheck, tests, dependency audit, Docker build.
+# Add "verify" and "docker" as required status checks next to "branch-policy" (see BRANCHING.md).
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.11.32"
+          python-version: "3.13"
+      - run: uv sync --frozen
+      - name: Verify (ruff + mypy + pytest)
+        run: make verify
+      - name: Audit runtime dependencies
+        run: uv export --frozen --no-dev --no-emit-project --format requirements-txt > /tmp/req.txt && uvx pip-audit --strict -r /tmp/req.txt
+
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build image
+        run: docker build -t yt-converter:ci .
+      - name: Smoke test /healthz
+        run: |
+          docker run -d --rm --name ytc -p 8080:8080 yt-converter:ci
+          for i in $(seq 1 20); do curl -fsS http://127.0.0.1:8080/healthz && exit 0; sleep 1; done
+          docker logs ytc; exit 1
