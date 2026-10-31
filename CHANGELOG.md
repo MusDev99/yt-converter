@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-31 15:15
+
+- ci: `branch-cleanup.yml` deletes a PR's branch after it is merged (skips forks, `main`, stacked bases)
+
 ## 2026-10-31 04:43 · v0.1.0
 
 - feat: project scaffold (Python 3.13, FastAPI, uv, `/healthz`), settings from `YTCONV_*` env vars
