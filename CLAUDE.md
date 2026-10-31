@@ -15,11 +15,16 @@ uv sync            # install (Python 3.13, uv)
 make run           # dev server on http://127.0.0.1:8000
 make verify        # ruff + format check + mypy --strict + pytest (= CI, run before every commit)
 make docker        # docker compose up --build (bound to 127.0.0.1 only)
+uv run ytconv <link> --confirm-rights --out ~/Music   # CLI convert (needs ffmpeg)
 ```
 
 ## Architecture
 
-- `src/ytconv/main.py`: FastAPI app. `/healthz` only for now; convert routes arrive in Week 2.
+- `src/ytconv/main.py`: FastAPI app. `/healthz` only for now; job routes arrive in Week 2 and must reuse `urls` + `converter`.
+- `src/ytconv/urls.py`: `parse_video_id()` is the only way a pasted link becomes a video id (host allowlist, https, no playlists, 11-char id). Everything downstream takes the id and rebuilds the URL with `canonical_url()`.
+- `src/ytconv/converter.py`: the only module that imports yt-dlp. `probe()` reads title/length/licence without downloading; `convert()` writes `<id>.mp3` (file named by id, never by title) with `FFmpegExtractAudio` + `FFmpegMetadata`. Length is checked before download and again by yt-dlp's `match_filter`. yt-dlp output goes to our logger; users only see `ConvertError` text. The downloader is injectable (`factory=`), tests use `tests/fakes.py`.
+- `src/ytconv/naming.py`: safe `Title.mp3` download names.
+- `src/ytconv/__main__.py`: CLI (`ytconv`), refuses to run without `--confirm-rights`.
 - `src/ytconv/config.py`: all limits and paths come from `YTCONV_*` env vars via `get_settings()`. No magic numbers elsewhere. Document new variables in `.env.example`.
 - Pure logic (URL validation, filenames, limits) goes in its own modules with unit tests in `tests/`. Network calls to YouTube are mocked in tests; never hit YouTube from CI.
 - `Dockerfile`: one image for local and Cloud Run, ffmpeg from Debian, non-root user, `PORT` env. `compose.yaml` binds to `127.0.0.1` only.
