@@ -50,3 +50,5 @@ docs/features/  feature specs
 ## 🧭 Standards
 
 [Agentic Coding Style](https://musdev99.github.io/agentic-coding-style) · [BRANCHING.md](https://github.com/MusDev99/agentic-coding-style/blob/main/BRANCHING.md) · rules for agents in [CLAUDE.md](CLAUDE.md) · history in [CHANGELOG.md](CHANGELOG.md).
+
+🧹 `branch-cleanup.yml` deletes the branch once its PR is merged (keep *Automatically delete head branches* on too).

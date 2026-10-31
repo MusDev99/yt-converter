@@ -41,4 +41,4 @@ uv run ytconv <link> --confirm-rights --out ~/Music   # CLI convert (needs ffmpe
 
 ## Git
 
-Never commit to `main`. Branches `feat/` `fix/` `chore/` `docs/` (agent sessions may use their given `claude/` branch). Conventional Commits for commits and PR titles (checked by `branch-policy.yml`). Squash merge, one concern per PR, under ~400 changed lines (`uv.lock` doesn't count). CI `verify`, `docker` and `branch-policy` must be green. Run the code-review skill (`.agents/skills/code-review/SKILL.md`) before every PR. Update README + CHANGELOG in the same PR. SemVer tags `vX.Y.Z`.
+Never commit to `main`. Branches `feat/` `fix/` `chore/` `docs/` (agent sessions may use their given `claude/` branch). Conventional Commits for commits and PR titles (checked by `branch-policy.yml`); merged branches are deleted by `branch-cleanup.yml`. Squash merge, one concern per PR, under ~400 changed lines (`uv.lock` doesn't count). CI `verify`, `docker` and `branch-policy` must be green. Run the code-review skill (`.agents/skills/code-review/SKILL.md`) before every PR. Update README + CHANGELOG in the same PR. SemVer tags `vX.Y.Z`.
