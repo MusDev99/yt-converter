@@ -1,5 +1,5 @@
 # One image for local Docker and (later) Cloud Run.
-FROM python:3.13-slim AS base
+FROM python:3.15-slim AS base
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
